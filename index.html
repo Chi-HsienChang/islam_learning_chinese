@@ -49,12 +49,12 @@
 </head>
 <body>
   <h1>伊斯蘭中文學習資源</h1>
-  <div id="visit-count">
+  <!-- <div id="visit-count">
     <span>今日訪問: <strong id="today-count">0</strong></span>
     <span>累積訪問: <strong id="total-count">0</strong></span>
-  </div>
+  </div> -->
 
-<div class="category-list">
+  <div class="category-list">
     <span class="category-tag" data-tag="信仰">最新消息 & 課程</span>
     <span class="category-tag" data-tag="教法">學習古蘭經</span>
     <span class="category-tag" data-tag="故事">學習聖訓</span>
@@ -83,43 +83,46 @@
     </div>
   </div>
 
-
+  <!-- Formspree 訂閱表單!!!! -->
   <form class="subscription" action="https://formspree.io/f/mqaqvrkp" method="POST">
     <input type="email" name="email" placeholder="輸入電子郵件訂閱新課程資訊" required />
     <button type="submit">免費訂閱</button>
   </form>
-  <p class="note">
-    若訂閱未成功（免費版限額），請將您的 Email 郵寄至
-    <a href="mailto:mingming5214@gmail.com">mingming5214@gmail.com</a>
-  </p>
-
-  <!-- <p style="text-align:center;">
-    <a href="/visits.csv" download>📄 下載訪問紀錄 CSV</a>
-  </p> -->
+  <p class="note">若訂閱未成功（免費版限額），請將您的 Email 郵寄至 <a href="mailto:mingming5214@gmail.com">mingming5214@gmail.com</a></p>
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      // 向後端通知「有一次訪問」
-      fetch('/api/visit', { method: 'POST' })
-        .then(r => r.json())
-        .then(data => {
-          document.getElementById('total-count').textContent = data.total;
-          document.getElementById('today-count').textContent = data.today;
-        })
-        .catch(console.error);
+      const today = new Date().toISOString().slice(0,10);
+      let total = parseInt(localStorage.getItem('visits_total') || '0', 10);
+      total++; localStorage.setItem('visits_total', total);
+      document.getElementById('total-count').textContent = total;
+      const todayKey = 'visits_' + today;
+      let todayCount = parseInt(localStorage.getItem(todayKey) || '0', 10);
+      todayCount++; localStorage.setItem(todayKey, todayCount);
+      document.getElementById('today-count').textContent = todayCount;
 
-      // 類別篩選邏輯保持不變
-      document.querySelectorAll('.category-tag').forEach(tag => {
-        tag.addEventListener('click', () => {
-          document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
-          tag.classList.add('active');
-          const sel = tag.dataset.tag;
-          document.querySelectorAll('.card').forEach(card => {
-            card.classList.toggle('hide', card.dataset.category !== sel);
-          });
-        });
-      });
+      document.querySelectorAll('.category-tag').forEach(tag => tag.addEventListener('click', () => {
+        document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        const sel = tag.dataset.tag;
+        document.querySelectorAll('.card').forEach(card => card.classList.toggle('hide', card.dataset.category !== sel));
+      }));
     });
+
+    // ✅ 需要時手動執行 resetVisits() 即可歸零
+    function resetVisits() {
+      localStorage.removeItem('visits_total');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('visits_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      // location.reload();
+    }
+
+    // resetVisits(); // 這行會在頁面載入時自動重置訪問次數
   </script>
+
+
 </body>
 </html>
