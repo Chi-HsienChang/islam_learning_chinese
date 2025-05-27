@@ -100,6 +100,7 @@
       let todayCount = parseInt(localStorage.getItem(todayKey) || '0', 10);
       todayCount++; localStorage.setItem(todayKey, todayCount);
       document.getElementById('today-count').textContent = todayCount;
+
       document.querySelectorAll('.category-tag').forEach(tag => tag.addEventListener('click', () => {
         document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
         tag.classList.add('active');
@@ -107,6 +108,20 @@
         document.querySelectorAll('.card').forEach(card => card.classList.toggle('hide', card.dataset.category !== sel));
       }));
     });
+
+    // ✅ 需要時手動執行 resetVisits() 即可歸零
+    function resetVisits() {
+      localStorage.removeItem('visits_total');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('visits_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      // location.reload();
+    }
+
+    resetVisits(); // 這行會在頁面載入時自動重置訪問次數
   </script>
+
 </body>
 </html>
