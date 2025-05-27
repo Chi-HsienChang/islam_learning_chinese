@@ -7,34 +7,17 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background-color: #f9f9f9; }
     h1 { text-align: center; margin: 1rem 0 0.5rem; }
+    /* 訂閱區塊樣式 */
     .subscription { max-width: 400px; margin: 0 auto 0.5rem; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .subscription input[type="email"] { width: 100%; padding: 0.5rem; font-size: 0.9rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem; }
     .subscription button { width: 100%; padding: 0.5rem; font-size: 0.9rem; background-color: #000; color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; }
     .subscription button:hover { background-color: #333; }
+    /* 提示文字 */
     .note { text-align: center; font-size: 0.85rem; color: #333; margin-bottom: 1rem; }
     .note a { color: #4D96FF; text-decoration: none; }
-
     /* 分類標籤 */
-    .category-list {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      padding: 0.5rem;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 1rem;
-    }
-    .category-tag {
-      padding: 0.75rem 1.25rem;
-      border-radius: 20px;
-      color: #fff;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      user-select: none;
-      flex: 0 0 auto;
-    }
+    .category-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; padding: 0.5rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+    .category-tag { padding: 0.75rem 1.25rem; border-radius: 20px; color: #fff; font-size: 1.1rem; cursor: pointer; transition: opacity 0.2s; user-select: none; }
     .category-tag:hover { opacity: 0.8; }
     .category-tag.active { outline: 2px solid #333; }
     .category-tag[data-tag="最新消息"] { background-color: #FF6B6B; }
@@ -44,22 +27,24 @@
     .category-tag[data-tag="學習禮拜"] { background-color: #FF6BCE; }
     .category-tag[data-tag="信仰充電"] { background-color: #9D4EDD; }
     .category-tag[data-tag="賺更多善功存到永恆後世"] { background-color: #00F5D4; }
-
-    /* 卡片 Grid */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      padding: 0 1rem 1rem;
-    }
-    .card { background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+    /* 課程卡片 4 欄 Grid */
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 0 1rem 1rem; }
+    .card { background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.2s; }
     .card.hide { display: none; }
     .card .image-wrapper { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; }
     .image-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
     .card-content { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
     .course-tag-inner { display: inline-block; padding: 0.25rem 0.5rem; font-size: 0.9rem; border-radius: 4px; margin-bottom: 0.5rem; }
+    .card[data-category="最新消息"] .course-tag-inner { background-color: #FF6B6B; color: #fff; }
+    .card[data-category="學習古蘭經"] .course-tag-inner { background-color: #FFB86C; color: #fff; }
+    .card[data-category="學習聖訓"] .course-tag-inner { background-color: #4D96FF; color: #fff; }
+    .card[data-category="五功六信"] .course-tag-inner { background-color: #6BCB77; color: #fff; }
+    .card[data-category="學習禮拜"] .course-tag-inner { background-color: #FF6BCE; color: #fff; }
+    .card[data-category="信仰充電"] .course-tag-inner { background-color: #9D4EDD; color: #fff; }
+    .card[data-category="賺更多善功存到永恆後世"] .course-tag-inner { background-color: #00F5D4; color: #fff; }
     .course-title { font-size: 1rem; line-height: 1.4; margin: 0; flex-grow: 1; }
 
+    /* ===== 行動裝置響應式調整 ===== */
     /* 平板/大手機：2 欄卡片 */
     @media (max-width: 768px) {
       .cards {
@@ -68,8 +53,7 @@
         padding: 0.5rem;
       }
     }
-
-    /* 小螢幕手機：1 欄卡片 + 滾動列對齊左側 */
+    /* 小螢幕手機：1 欄卡片 + 標籤列可橫向捲動 */
     @media (max-width: 480px) {
       .cards {
         grid-template-columns: 1fr;
@@ -77,26 +61,35 @@
       .category-list {
         flex-wrap: nowrap;
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        justify-content: flex-start;
-        padding: 0 0.5rem;
+        padding: 0.5rem;
         gap: 0.5rem;
       }
       .category-tag {
+        flex: 0 0 auto;
         font-size: 0.9rem;
         padding: 0.5rem 0.75rem;
       }
-      h1 { font-size: 1.5rem; }
-      .note { font-size: 0.8rem; padding: 0 0.5rem; }
-      .subscription { margin: 0.5rem auto 1rem; padding: 0.75rem; }
+      h1 {
+        font-size: 1.5rem;
+      }
+      .note {
+        font-size: 0.8rem;
+        padding: 0 0.5rem;
+      }
+      .subscription {
+        margin: 0.5rem auto 1rem;
+        padding: 0.75rem;
+      }
     }
   </style>
 </head>
 <body>
   <h1>伊斯蘭中文學習資源</h1>
 
+  <!-- 訪問次數顯示 -->
   <p id="visit-count" class="note">累計訪問次數：載入中…</p>
 
+  <!-- 分類標籤 -->
   <div class="category-list">
     <span class="category-tag active" data-tag="最新消息">最新消息</span>
     <span class="category-tag" data-tag="學習古蘭經">學習古蘭經</span>
@@ -107,6 +100,7 @@
     <span class="category-tag" data-tag="賺更多善功存到永恆後世">賺更多善功存到永恆後世</span>
   </div>
 
+  <!-- 課程卡片 -->
   <div class="cards">
     <div class="card" data-category="最新消息">
       <div class="image-wrapper">
@@ -119,12 +113,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習古蘭經">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/2.jpeg" alt="古蘭經入門" />
         </a>
       </div>
       <div class="card-content">
@@ -132,11 +124,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習聖訓">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/3.jpeg" alt="聖訓故事" />
         </a>
       </div>
       <div class="card-content">
@@ -144,12 +135,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習聖訓">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/3.jpeg" alt="聖訓故事" />
         </a>
       </div>
       <div class="card-content">
@@ -157,11 +146,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習聖訓">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/3.jpeg" alt="聖訓故事" />
         </a>
       </div>
       <div class="card-content">
@@ -169,11 +157,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習聖訓">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/3.jpeg" alt="聖訓故事" />
         </a>
       </div>
       <div class="card-content">
@@ -181,11 +168,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習聖訓">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/3.jpeg" alt="聖訓故事" />
         </a>
       </div>
       <div class="card-content">
@@ -193,11 +179,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習聖訓">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/3.jpeg" alt="聖訓故事" />
         </a>
       </div>
       <div class="card-content">
@@ -205,11 +190,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
+    <div class="card" data-category="學習聖訓">
       <div class="image-wrapper">
         <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
+          <img src="./png/3.jpeg" alt="聖訓故事" />
         </a>
       </div>
       <div class="card-content">
@@ -217,32 +201,10 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-  <div class="cards">
-    <div class="card" data-category="最新消息">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/1.jpeg" alt="提升" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
+    <!-- 其餘卡片同理… -->
   </div>
 
+  <!-- 訂閱表單 -->
   <form class="subscription" action="https://formspree.io/f/mqaqvrkp" method="POST">
     <input type="email" name="email" placeholder="輸入電子郵件訂閱新課程資訊" required />
     <button type="submit">免費訂閱</button>
@@ -254,6 +216,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // 分類切換邏輯
       const tags  = document.querySelectorAll('.category-tag');
       const cards = document.querySelectorAll('.card');
       tags.forEach(tag => {
@@ -261,18 +224,23 @@
           tags.forEach(t => t.classList.remove('active'));
           tag.classList.add('active');
           const sel = tag.dataset.tag;
-          cards.forEach(card => card.classList.toggle('hide', card.dataset.category !== sel));
+          cards.forEach(card => {
+            card.classList.toggle('hide', card.dataset.category !== sel);
+          });
         });
       });
 
+      // 呼叫 /api/visits，顯示並自動遞增訪問次數
       fetch('/api/visits')
         .then(res => res.json())
         .then(data => {
           document.getElementById('visit-count').textContent =
             `累計訪問次數：${data.count} 次`;
         })
-        .catch(() => {
-          document.getElementById('visit-count').textContent = '訪問次數載入失敗';
+        .catch(err => {
+          console.error(err);
+          document.getElementById('visit-count').textContent =
+            '訪問次數載入失敗';
         });
     });
   </script>
