@@ -7,12 +7,13 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background-color: #f9f9f9; }
     h1 { text-align: center; margin: 1rem 0 0.5rem; }
+    .visit-info { display: flex; justify-content: center; gap: 1rem; font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
     /* 訂閱區塊樣式 */
     .subscription { max-width: 400px; margin: 0 auto 0.5rem; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .subscription input[type="email"] { width: 100%; padding: 0.5rem; font-size: 0.9rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem; }
     .subscription button { width: 100%; padding: 0.5rem; font-size: 0.9rem; background-color: #000; color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; }
     .subscription button:hover { background-color: #333; }
-    /* 提示文字 */
+    /* 訂閱提示文字 */
     .note { text-align: center; font-size: 0.85rem; color: #333; margin-bottom: 1rem; }
     .note a { color: #4D96FF; text-decoration: none; }
     /* 分類標籤 */
@@ -27,8 +28,13 @@
     .category-tag[data-tag="學習禮拜"] { background-color: #FF6BCE; }
     .category-tag[data-tag="信仰充電"] { background-color: #9D4EDD; }
     .category-tag[data-tag="賺更多善功存到永恆後世"] { background-color: #00F5D4; }
-    /* 課程卡片 4 欄 Grid */
-    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 0 1rem 1rem; }
+    /* 課程卡片佈局：4 欄 Grid */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      padding: 0 1rem 1rem;
+    }
     .card { background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.2s; }
     .card.hide { display: none; }
     .card .image-wrapper { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; }
@@ -47,11 +53,11 @@
 </head>
 <body>
   <h1>伊斯蘭中文學習資源</h1>
+  <div class="visit-info">
+    <span id="today-count">今日訪問: --</span>
+    <span id="total-count">累積訪問: --</span>
+  </div>
 
-  <!-- 新增：訪問次數顯示 -->
-  <p id="visit-count" class="note">載入中…</p>
-
-  <!-- 分類標籤 -->
   <div class="category-list">
     <span class="category-tag active" data-tag="最新消息">最新消息</span>
     <span class="category-tag" data-tag="學習古蘭經">學習古蘭經</span>
@@ -62,82 +68,53 @@
     <span class="category-tag" data-tag="賺更多善功存到永恆後世">賺更多善功存到永恆後世</span>
   </div>
 
-  <!-- 課程卡片 -->
   <div class="cards">
-    <div class="card" data-category="最新消息">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="1.jpeg" alt="提升" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學習古蘭經">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="2.jpeg" alt="古蘭經入門" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學習聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <!-- 其餘卡片同理… -->
+    <!-- 課程卡片... -->
   </div>
 
-  <!-- 訂閱表單 -->
   <form class="subscription" action="https://formspree.io/f/mqaqvrkp" method="POST">
     <input type="email" name="email" placeholder="輸入電子郵件訂閱新課程資訊" required />
     <button type="submit">免費訂閱</button>
   </form>
-  <p class="note">
-    若訂閱未成功（免費版限額），請將您的 Email 郵寄至
-    <a href="mailto:mingming5214@gmail.com">mingming5214@gmail.com</a>
-  </p>
+  <p class="note">若訂閱未成功（免費版限額），請將您的 Email 郵寄至 <a href="mailto:mingming5214@gmail.com">mingming5214@gmail.com</a>  (標題: 訂閱伊斯蘭中文學習資源) </p>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // 分類切換邏輯
-      const tags  = document.querySelectorAll('.category-tag');
-      const cards = document.querySelectorAll('.card');
-      tags.forEach(tag => {
-        tag.addEventListener('click', () => {
-          tags.forEach(t => t.classList.remove('active'));
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const tags=document.querySelectorAll('.category-tag');
+      const cards=document.querySelectorAll('.card');
+      tags.forEach(tag=>{
+        tag.addEventListener('click',()=>{
+          tags.forEach(t=>t.classList.remove('active'));
           tag.classList.add('active');
-          const sel = tag.dataset.tag;
-          cards.forEach(card => {
-            card.classList.toggle('hide', card.dataset.category !== sel);
+          const sel=tag.dataset.tag;
+          cards.forEach(card=>{
+            card.classList.toggle('hide',card.dataset.category!==sel);
           });
         });
       });
 
-      // 呼叫 /api/visits，顯示並自動遞增訪問次數
-      fetch('/api/visits')
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('visit-count').textContent =
-            `今日訪問：${data.count} 次`;
+      // 讀取 visits.csv 顯示訪問次數
+      fetch('visits.csv')
+        .then(response => response.text())
+        .then(text => {
+          const lines = text.trim().split('\n');
+          let today, total;
+          if (lines.length > 1 && lines[0].includes(',')) {
+            const header = lines[0].split(',');
+            const values = lines[1].split(',');
+            const todayIdx = header.indexOf('today') !== -1 ? header.indexOf('today') : 0;
+            const totalIdx = header.indexOf('total') !== -1 ? header.indexOf('total') : 1;
+            today = values[todayIdx];
+            total = values[totalIdx];
+          } else {
+            const values = lines[0].split(',');
+            today = values[0];
+            total = values[1];
+          }
+          document.getElementById('today-count').textContent = `今日訪問: ${today}`;
+          document.getElementById('total-count').textContent = `累積訪問: ${total}`;
         })
-        .catch(err => {
-          console.error(err);
-          document.getElementById('visit-count').textContent =
-            '訪問次數載入失敗';
-        });
+        .catch(err => console.error('Error loading visits.csv:', err));
     });
   </script>
 </body>
