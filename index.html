@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>限時優惠課程推薦</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background-color: #f9f9f9; }
+    h1 { text-align: center; margin: 1rem 0 0.5rem; }
+    /* 訪問次數：同列顯示 */
+    #visit-count { display: flex; justify-content: center; gap: 2rem; font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
+    /* 訂閱區塊樣式 */
+    .subscription { max-width: 400px; margin: 0 auto 0.5rem; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .subscription input[type="email"] { width: 100%; padding: 0.5rem; font-size: 0.9rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem; }
+    .subscription button { width: 100%; padding: 0.5rem; font-size: 0.9rem; background-color: #000; color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; }
+    .subscription button:hover { background-color: #333; }
+    /* 訂閱提示文字 */
+    .note { text-align: center; font-size: 0.85rem; color: #333; margin-bottom: 1rem; }
+    .note a { color: #4D96FF; text-decoration: none; }
+    /* 分類標籤 */
+    .category-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; padding: 0.5rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+    .category-tag { padding: 0.75rem 1.25rem; border-radius: 20px; color: #fff; font-size: 1.1rem; cursor: pointer; transition: opacity 0.2s; user-select: none; }
+    .category-tag:hover { opacity: 0.8; }
+    .category-tag.active { outline: 2px solid #333; }
+    .category-tag[data-tag="信仰"] { background-color: #FF6B6B; }
+    .category-tag[data-tag="教法"] { background-color: #FFB86C; }
+    .category-tag[data-tag="故事"] { background-color: #4D96FF; }
+    .category-tag[data-tag="常識"] { background-color: #6BCB77; }
+    .category-tag[data-tag="生活"] { background-color: #FF6BCE; }
+    .category-tag[data-tag="視頻"] { background-color: #9D4EDD; }
+    .category-tag[data-tag="文化"] { background-color: #00F5D4; }
+    /* 課程卡片佈局 */
+    .cards { padding: 0 1rem 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .card { background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.2s; }
+    .card.hide { display: none; }
+    .card .image-wrapper { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; }
+    .image-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .card-content { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
+    .course-tag-inner { display: inline-block; padding: 0.25rem 0.5rem; font-size: 0.9rem; border-radius: 4px; margin-bottom: 0.5rem; }
+    .card[data-category="信仰"] .course-tag-inner { background-color: #FF6B6B; color: #fff; }
+    .card[data-category="教法"] .course-tag-inner { background-color: #FFB86C; color: #fff; }
+    .card[data-category="故事"] .course-tag-inner { background-color: #4D96FF; color: #fff; }
+    .card[data-category="常識"] .course-tag-inner { background-color: #6BCB77; color: #fff; }
+    .card[data-category="生活"] .course-tag-inner { background-color: #FF6BCE; color: #fff; }
+    .card[data-category="視頻"] .course-tag-inner { background-color: #9D4EDD; color: #fff; }
+    .card[data-category="文化"] .course-tag-inner { background-color: #00F5D4; color: #fff; }
+    .course-title { font-size: 1rem; line-height: 1.4; margin: 0; flex-grow: 1; }
+  </style>
+</head>
+<body>
+  <h1>限時優惠課程推薦</h1>
+  <div id="visit-count">
+    <span>今日訪問: <strong id="today-count">0</strong></span>
+    <span>累積訪問: <strong id="total-count">0</strong></span>
+  </div>
+
+  <div class="category-list">
+    <span class="category-tag" data-tag="信仰">信仰</span>
+    <span class="category-tag" data-tag="教法">教法</span>
+    <span class="category-tag" data-tag="故事">故事</span>
+    <span class="category-tag" data-tag="常識">常識</span>
+    <span class="category-tag" data-tag="生活">生活</span>
+    <span class="category-tag" data-tag="視頻">視頻</span>
+    <span class="category-tag" data-tag="文化">文化</span>
+  </div>
+
+  <div class="cards">
+    <div class="card" data-category="信仰">
+      <div class="image-wrapper"><a href="https://www.youtube.com" target="_blank"><img src="1.jpeg" alt="提升男人續航力" /></a></div>
+      <div class="card-content"><span class="course-tag-inner">課程</span><h3 class="course-title">提升男人續航力！泌尿科醫師的保健全指南</h3></div>
+    </div>
+    <div class="card" data-category="教法">
+      <div class="image-wrapper"><a href="https://www.youtube.com" target="_blank"><img src="1.jpeg" alt="老蕭的財富傳承心法" /></a></div>
+      <div class="card-content"><span class="course-tag-inner">課程</span><h3 class="course-title">老蕭的財富傳承心法｜傳承有道—高資產客戶信賴的財富規劃術</h3></div>
+    </div>
+    <div class="card" data-category="故事">
+      <div class="image-wrapper"><a href="https://www.youtube.com" target="_blank"><img src="1.jpeg" alt="保險超業養成" /></a></div>
+      <div class="card-content"><span class="course-tag-inner">課程</span><h3 class="course-title">鄭景杰的保險超業養成｜客戶行銷與保單健檢突破百萬業績</h3></div>
+    </div>
+    <div class="card" data-category="故事">
+      <div class="image-wrapper"><a href="https://www.youtube.com" target="_blank"><img src="1.jpeg" alt="保險超業養成" /></a></div>
+      <div class="card-content"><span class="course-tag-inner">課程</span><h3 class="course-title">鄭景杰的保險超業養成｜客戶行銷與保單健檢突破百萬業績</h3></div>
+    </div>
+  </div>
+
+  <!-- Formspree 訂閱表單 -->
+  <form class="subscription" action="https://formspree.io/f/mqaqvrkp" method="POST">
+    <input type="email" name="email" placeholder="輸入電子郵件訂閱新課程資訊" required />
+    <button type="submit">免費訂閱</button>
+  </form>
+  <p class="note">若訂閱未成功（免費版限額），請郵寄 Email 至 <a href="mailto:mingming5214@gmail.com">mingming5214@gmail.com</a></p>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().slice(0,10);
+      let total = parseInt(localStorage.getItem('visits_total') || '0', 10);
+      total++; localStorage.setItem('visits_total', total);
+      document.getElementById('total-count').textContent = total;
+      const todayKey = 'visits_' + today;
+      let todayCount = parseInt(localStorage.getItem(todayKey) || '0', 10);
+      todayCount++; localStorage.setItem(todayKey, todayCount);
+      document.getElementById('today-count').textContent = todayCount;
+      document.querySelectorAll('.category-tag').forEach(tag => tag.addEventListener('click', () => {
+        document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        const sel = tag.dataset.tag;
+        document.querySelectorAll('.card').forEach(card => card.classList.toggle('hide', card.dataset.category !== sel));
+      }));
+    });
+  </script>
+</body>
+</html>
