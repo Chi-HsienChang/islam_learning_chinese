@@ -7,19 +7,34 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background-color: #f9f9f9; }
     h1 { text-align: center; margin: 1rem 0 0.5rem; }
-    /* 訂閱區塊樣式 */
-    .subscription { max-width: 400px; margin: 0 auto 0.5rem; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .subscription input[type="email"] { width: 100%; padding: 0.5rem; font-size: 0.9rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem; }
-    .subscription button { width: 100%; padding: 0.5rem; font-size: 0.9rem; background-color: #000; color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; }
-    .subscription button:hover { background-color: #333; }
-    /* 提示文字 */
-    .note { text-align: center; font-size: 0.85rem; color: #333; margin-bottom: 1rem; }
-    .note a { color: #4D96FF; text-decoration: none; }
+
+    /* 訪問次數 */
+    #visit-count.note { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
+
     /* 分類標籤 */
-    .category-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; padding: 0.5rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
-    .category-tag { padding: 0.75rem 1.25rem; border-radius: 20px; color: #fff; font-size: 1.1rem; cursor: pointer; transition: opacity 0.2s; user-select: none; }
+    .category-list {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 0.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+    .category-tag {
+      padding: 0.75rem 1.25rem;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      user-select: none;
+    }
     .category-tag:hover { opacity: 0.8; }
     .category-tag.active { outline: 2px solid #333; }
+
+    /* 各標籤配色 */
     .category-tag[data-tag="最新消息"] { background-color: #FF6B6B; }
     .category-tag[data-tag="學古蘭經"] { background-color: #FFB86C; }
     .category-tag[data-tag="學聖訓"] { background-color: #4D96FF; }
@@ -27,40 +42,102 @@
     .category-tag[data-tag="學習禮拜"] { background-color: #FF6BCE; }
     .category-tag[data-tag="信仰充電"] { background-color: #9D4EDD; }
     .category-tag[data-tag="賺善功"] { background-color: #00F5D4; }
+
     /* 課程卡片 4 欄 Grid */
-    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 0 1rem 1rem; }
-    .card { background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.2s; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      padding: 0 1rem 1rem;
+    }
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column;
+      transition: transform 0.2s;
+    }
     .card.hide { display: none; }
-    .card .image-wrapper { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; }
-    .image-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-    .card-content { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
-    .course-tag-inner { display: inline-block; padding: 0.25rem 0.5rem; font-size: 0.9rem; border-radius: 4px; margin-bottom: 0.5rem; }
-    .card[data-category="最新消息"] .course-tag-inner { background-color: #FF6B6B; color: #fff; }
-    .card[data-category="學古蘭經"] .course-tag-inner { background-color: #FFB86C; color: #fff; }
-    .card[data-category="學聖訓"] .course-tag-inner { background-color: #4D96FF; color: #fff; }
-    .card[data-category="五功六信"] .course-tag-inner { background-color: #6BCB77; color: #fff; }
-    .card[data-category="學習禮拜"] .course-tag-inner { background-color: #FF6BCE; color: #fff; }
-    .card[data-category="信仰充電"] .course-tag-inner { background-color: #9D4EDD; color: #fff; }
-    .card[data-category="賺善功"] .course-tag-inner { background-color: #00F5D4; color: #fff; }
+    .image-wrapper {
+      position: relative;
+      width: 100%; padding-top: 56.25%; overflow: hidden;
+    }
+    .image-wrapper img {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .card-content {
+      padding: 1rem; flex-grow: 1; display: flex; flex-direction: column;
+    }
+    .course-tag-inner {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .card[data-category] .course-tag-inner {
+      color: #fff;
+    }
+    /* 同上各分類色塊 */
+    .card[data-category="最新消息"] .course-tag-inner { background-color: #FF6B6B; }
+    .card[data-category="學古蘭經"] .course-tag-inner { background-color: #FFB86C; }
+    .card[data-category="學聖訓"] .course-tag-inner { background-color: #4D96FF; }
+    .card[data-category="五功六信"] .course-tag-inner { background-color: #6BCB77; }
+    .card[data-category="學習禮拜"] .course-tag-inner { background-color: #FF6BCE; }
+    .card[data-category="信仰充電"] .course-tag-inner { background-color: #9D4EDD; }
+    .card[data-category="賺善功"] .course-tag-inner { background-color: #00F5D4; }
+
     .course-title { font-size: 1rem; line-height: 1.4; margin: 0; flex-grow: 1; }
 
+    /* 訂閱表單 */
+    .subscription {
+      max-width: 400px;
+      margin: 0 auto 1rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .subscription input[type="email"] {
+      width: 100%; padding: 0.5rem; font-size: 0.9rem;
+      border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem;
+    }
+    .subscription button {
+      width: 100%; padding: 0.5rem; font-size: 0.9rem;
+      background-color: #000; color: #fff;
+      border: none; border-radius: 4px; cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .subscription button:hover { background-color: #333; }
+
+    .note {
+      text-align: center; font-size: 0.85rem; color: #333;
+      margin-bottom: 1rem;
+    }
+    .note a { color: #4D96FF; text-decoration: none; }
+
     /* ===== 行動裝置響應式調整 ===== */
-    /* 平板/大手機：2 欄卡片 */
+    /* 平板/大手機：2 欄 */
     @media (max-width: 768px) {
       .cards {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-        padding: 0.5rem;
+        gap: 0.75rem; padding: 0.5rem;
       }
     }
-    /* 小螢幕手機：1 欄卡片 + 標籤列可橫向捲動 */
+    /* 小螢幕手機：1 欄 + 標籤列可橫向捲動且靠左 */
     @media (max-width: 480px) {
       .cards {
         grid-template-columns: 1fr;
       }
       .category-list {
+        /* 由原本 justify-content: center 改為靠左 */
+        justify-content: flex-start;
+        /* 保持橫向不換行並允許滾動 */
         flex-wrap: nowrap;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         padding: 0.5rem;
         gap: 0.5rem;
       }
@@ -69,24 +146,16 @@
         font-size: 0.9rem;
         padding: 0.5rem 0.75rem;
       }
-      h1 {
-        font-size: 1.5rem;
-      }
-      .note {
-        font-size: 0.8rem;
-        padding: 0 0.5rem;
-      }
-      .subscription {
-        margin: 0.5rem auto 1rem;
-        padding: 0.75rem;
-      }
+      h1 { font-size: 1.5rem; }
+      .note { font-size: 0.8rem; padding: 0 0.5rem; }
+      .subscription { margin: 0.5rem auto 1rem; padding: 0.75rem; }
     }
   </style>
 </head>
 <body>
   <h1>伊斯蘭中文學習資源</h1>
 
-  <!-- 訪問次數顯示 -->
+  <!-- 訪問次數 -->
   <p id="visit-count" class="note">累計訪問次數：載入中…</p>
 
   <!-- 分類標籤 -->
@@ -113,95 +182,7 @@
         <h3 class="course-title">xxxx｜xxxx</h3>
       </div>
     </div>
-    <div class="card" data-category="學古蘭經">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/2.jpeg" alt="古蘭經入門" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <div class="card" data-category="學聖訓">
-      <div class="image-wrapper">
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="./png/3.jpeg" alt="聖訓故事" />
-        </a>
-      </div>
-      <div class="card-content">
-        <span class="course-tag-inner">課程</span>
-        <h3 class="course-title">xxxx｜xxxx</h3>
-      </div>
-    </div>
-    <!-- 其餘卡片同理… -->
+    <!-- 其餘卡片… -->
   </div>
 
   <!-- 訂閱表單 -->
@@ -216,7 +197,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 分類切換邏輯
+      // 分類切換
       const tags  = document.querySelectorAll('.category-tag');
       const cards = document.querySelectorAll('.card');
       tags.forEach(tag => {
@@ -230,7 +211,7 @@
         });
       });
 
-      // 呼叫 /api/visits，顯示並自動遞增訪問次數
+      // 訪問次數遞增
       fetch('/api/visits')
         .then(res => res.json())
         .then(data => {
