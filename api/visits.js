@@ -20,6 +20,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ count: data.result });
   } catch (err) {
     console.error('Redis error:', err);
-    return res.status(500).json({ error: '計數更新失敗' });
+    return res.status(500).json({ error: '計數更新失敗!' });
   }
 }
