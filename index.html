@@ -49,7 +49,8 @@
   <h1>伊斯蘭中文學習資源</h1>
 
   <!-- 新增：訪問次數顯示 -->
-  <p id="visit-count" class="note">載入中…</p>
+  <!-- <p id="visit-count" class="note">載入中…</p> -->
+   <p id="visit-count" class="note">累計訪問次數：載入中…</p>
 
   <!-- 分類標籤 -->
   <div class="category-list">
@@ -131,7 +132,8 @@
         .then(res => res.json())
         .then(data => {
           document.getElementById('visit-count').textContent =
-            `今日訪問：${data.count} 次`;
+            // 這裡把「今日訪問」改成「累計訪問次數」
+            `累計訪問次數：${data.count} 次`;
         })
         .catch(err => {
           console.error(err);
